@@ -10,10 +10,10 @@ source code on https://github.com/hms5232/ufw-log-to-csv
 def main():
 	# try...expect...finally...
 	# 用 with 資源會自動釋放
-	# ※※      ↓↓↓↓↓↓↓ change input filename here if you want ※※
+	# ※※ >>>  ↓↓↓↓↓↓↓ change input filename here if you want <<< ※※
 	with open('ufw.log', 'r', encoding='UTF-8') as f:
 		ufw_logs = f.readlines()  # 逐行讀取並存入 list
-		# ※※      ↓↓↓↓↓↓↓↓↓↓↓ change output filename here if you want ※※
+		# ※※ >>>  ↓↓↓↓↓↓↓↓↓↓↓ change output filename here if you want <<< ※※
 		with open('ufw_log.csv', 'a', encoding='UTF-8') as o:  # o of "output"
 			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","封包類型","URGP"\n'
 			output = csv_title  # 輸出到 csv 的內容
@@ -30,22 +30,26 @@ def main():
 def get_expect_time(log_string):
 	log_string = log_string[16:]  # 把前面已經擷取的時間部分切掉
 	result = ''  # 擷取出來的內容
-	while len(log_string) != 1:  # 這筆紀錄還沒跑完
+	while len(log_string) > 2:  # 這筆紀錄還沒跑完
 		# Re:從零開始
 		starttag = 0
 		endtag = 0
-		# TODO: SYN沒有=
 		if log_string.find('[') != -1:  # 先抓有[]的
 			starttag = log_string.find('[')
 			endtag = log_string.find(']')
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
-			log_string = log_string[endtag+2:]  # 抓取]後後面還有個空格才是接下來的內容
-		elif log_string.find('=') != -1:  # 再抓剩下有=的
-			starttag = log_string.find('=')
-			endtag = log_string.find(' ')
+			log_string = log_string[endtag+1:]  # 去掉]後從空格開始
+		elif log_string.find(' ') != -1:  # 再抓剩下的
+			# TODO: 竟然有個什麼DF的害我欄位歪掉不說還要另外寫判斷
+			starttag = log_string.find(' ')
+			log_string_tmp = log_string[starttag+1:]
+			endtag = log_string_tmp.find(' ') + 1
+			# 如果是有=的話就只抓=後面的部分
+			if log_string[starttag+1:endtag].find('=') != -1:
+				starttag = log_string.find('=')
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
-			log_string = log_string[endtag+1:]
-	result = result + ',\n'  # 一筆紀錄處理完了記得換行
+			log_string = log_string[endtag:]  # 保留空格不切掉
+	result = result + '\n'  # 一筆紀錄處理完了記得換行
 	return result
 
 

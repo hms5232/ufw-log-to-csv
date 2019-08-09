@@ -1,4 +1,5 @@
-# python3
+#!/usr/bin/python3
+# file encoding=utf-8
 
 """
 author: hms5232
@@ -8,23 +9,24 @@ source code on https://github.com/hms5232/ufw-log-to-csv
 
 def main():
 	# try...expect...finally...
-	# 用with資源會自動釋放
+	# 用 with 資源會自動釋放
+	# ※※      ↓↓↓↓↓↓↓ change input filename here if you want ※※
 	with open('ufw.log', 'r', encoding='UTF-8') as f:
-		ufw_logs = f.readlines()  # 逐行讀取並存入list
-		with open('ufw_log.csv', 'a', encoding='UTF-8') as o:  # o of output
-			log_items = ['IN', 'OUT', 'MAC', 'SRC', 'LEN']  #
-			csv_title = '"月","日","時間","主機","unknown","動作","IN","OUT","來自(src)","LEN","TOS","PREC","TTL","ID","協定(PROTO)","SPT","DPT","WINDOW","RES","封包類型","URGP"\n'
-			output = csv_title  # 輸出到csv的內容
+		ufw_logs = f.readlines()  # 逐行讀取並存入 list
+		# ※※      ↓↓↓↓↓↓↓↓↓↓↓ change output filename here if you want ※※
+		with open('ufw_log.csv', 'a', encoding='UTF-8') as o:  # o of "output"
+			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","封包類型","URGP"\n'
+			output = csv_title  # 輸出到 csv 的內容
 			# 讀取每一筆紀錄
 			for i in range(len(ufw_logs)):
-				print("正在處理第", i+1, "筆資料")
+				print("正在處理第", i+1, "筆紀錄")
 				output = output + '"' + ufw_logs[i][0:3] + '",' + '"' + ufw_logs[i][4:6] + '",' + '"' + ufw_logs[i][7:16] + '",'  # 時間
-				# TODO: kernel名稱另外這邊就先抓
+				output = output + get_kernel_name(ufw_logs[i])  # kernel名稱另外這邊就先抓
 				output = output + get_expect_time(ufw_logs[i])
 			o.write(output)  # 寫入csv
 
 
-# 抓取kernel之後的部分
+# 抓取 kernel 之後的部分
 def get_expect_time(log_string):
 	log_string = log_string[16:]  # 把前面已經擷取的時間部分切掉
 	result = ''  # 擷取出來的內容
@@ -33,20 +35,28 @@ def get_expect_time(log_string):
 		starttag = 0
 		endtag = 0
 		# TODO: SYN沒有=
-		if log_string.find('[') != -1:
+		if log_string.find('[') != -1:  # 先抓有[]的
 			starttag = log_string.find('[')
 			endtag = log_string.find(']')
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
-			log_string = log_string[endtag+1:]
-			continue
-		elif log_string.find('=') != -1:
+			log_string = log_string[endtag+2:]  # 抓取]後後面還有個空格才是接下來的內容
+		elif log_string.find('=') != -1:  # 再抓剩下有=的
 			starttag = log_string.find('=')
 			endtag = log_string.find(' ')
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
 			log_string = log_string[endtag+1:]
-			continue
-	result = result + ',\n'
+	result = result + ',\n'  # 一筆紀錄處理完了記得換行
 	return result
+
+
+# 擷取 kernel 的名字
+def get_kernel_name(log_string):
+	kernel_name = ''
+	kernel_tag = 0
+	if log_string.find('kernel') != -1:
+		kernel_name = '"' + log_string[16:log_string.find('kernel')] + '",'
+	return kernel_name
+
 
 if __name__ == '__main__':
 	main()

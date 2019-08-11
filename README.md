@@ -10,7 +10,7 @@
     cd [檔案所在位置]
     py ufw_log_to_csv.py
 
-之後程式會自己尋找`ufw.log`這個檔案並輸出成`ufw_log.csv`（可自行替換程式碼中輸出和輸入的檔名以符合自己需求）
+之後程式會自己尋找`ufw.log`這個檔案並輸出成`ufw_log.csv`（可自行替換程式碼中輸出和輸入的檔名以符合自己需求），如果有不正確的地方請調整設定：編碼為**UTF-8**、資料有標題、分隔符號為**逗號**。
 
 ## 已知問題　Known issues
 1. 在 ID 和 PROTO 兩個欄位之間有時會出現[「DF」（don't fragment）](https://askubuntu.com/questions/143371/what-do-ufws-audit-log-entries-mean)導致部分紀錄的欄位歪掉

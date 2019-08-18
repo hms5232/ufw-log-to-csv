@@ -13,7 +13,8 @@ Python 3.6 or or latest version (For Python2, you can delete `, encoding='UTF-8'
 請將`ufw_log_to_csv.py`和`ufw.log`放在同個目錄下（可將log複製出來或將`ufw_log_to_csv.py`放進去，推薦前者）後執行：  
 
     cd [檔案所在位置]
-    py ufw_log_to_csv.py
+    py ufw_log_to_csv.py  # Windows user
+    python3 ufw_log_to_csv.py  # Linux user
 
 之後程式會自己尋找`ufw.log`這個檔案並輸出成`ufw_log.csv`（可自行替換程式碼中輸出和輸入的檔名以符合自己需求），如果有不正確的地方請調整設定：編碼為**UTF-8**、資料有標題、分隔符號為**逗號**。
 

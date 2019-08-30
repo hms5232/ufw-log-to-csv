@@ -7,14 +7,18 @@ source code on https://github.com/hms5232/ufw-log-to-csv
 """
 
 
+import datetime
+
+
 def main():
 	# try...expect...finally...
 	# 用 with 資源會自動釋放
 	# ※※ >>>  ↓↓↓↓↓↓↓ change input filename here if you want <<< ※※
 	with open('ufw.log', 'r', encoding='UTF-8') as f:
 		ufw_logs = f.readlines()  # 逐行讀取並存入 list
+		now_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  # 取得現在時間並格式化
 		# ※※ >>>  ↓↓↓↓↓↓↓↓↓↓↓ change output filename here if you want <<< ※※
-		with open('ufw_log.csv', 'a', encoding='UTF-8') as o:  # o of "output"
+		with open("ufw"+now_time+".csv", 'a', encoding='UTF-8') as o:  # o of "output"
 			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","封包類型","URGP"\n'
 			output = csv_title  # 輸出到 csv 的內容
 			# 讀取每一筆紀錄

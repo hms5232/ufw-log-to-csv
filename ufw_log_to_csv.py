@@ -19,7 +19,7 @@ def main():
 		now_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  # 取得現在時間並格式化
 		# ※※ >>>  ↓↓↓↓↓↓↓↓↓↓↓ change output filename here if you want <<< ※※
 		with open("ufw"+now_time+".csv", 'a', encoding='UTF-8') as o:  # o of "output"
-			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","封包類型","URGP"\n'
+			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","Control Bits / flags","URGP"\n'
 			output = csv_title  # 輸出到 csv 的內容
 			# 讀取每一筆紀錄
 			for i in range(len(ufw_logs)):

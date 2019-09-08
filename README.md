@@ -16,11 +16,11 @@ Python 3.6 or or latest version (For Python2, you can delete `, encoding='UTF-8'
     py ufw_log_to_csv.py  # Windows user
     python3 ufw_log_to_csv.py  # Linux user
 
-之後程式會自己尋找`ufw.log`這個檔案並輸出成`ufw_log.csv`（可自行替換程式碼中輸出和輸入的檔名以符合自己需求），如果有不正確的地方請調整設定：編碼為**UTF-8**、資料有標題、分隔符號為**逗號**。
+之後程式會自己尋找`ufw.log`這個檔案並輸出成`[YYYYMMDD_HHMMSS].csv`（可自行替換程式碼中輸出和輸入的檔名以符合自己需求），如果有不正確的地方請調整設定：編碼為**UTF-8**、資料有標題、分隔符號為**逗號**。
 
 ## 已知問題　Known issues
 1. 在 ID 和 PROTO 兩個欄位之間有時會出現[「DF」（don't fragment）](https://askubuntu.com/questions/143371/what-do-ufws-audit-log-entries-mean)導致部分紀錄的欄位歪掉
-2. 在封包類型（倒數第二項資料，例如：SYN）這欄中有時會不只有一種封包，導致欄位歪掉。例如：`ACK PSH`或`CWR ECE SYN`等
+2. 在Control Bits（倒數第二項資料，例如：SYN）這欄中有時會不只有一種封包，導致欄位歪掉。例如：`ACK PSH`或`CWR ECE SYN`等
 
 
 ## 許可　License

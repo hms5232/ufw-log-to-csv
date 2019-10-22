@@ -23,11 +23,12 @@ def main():
 			output = csv_title  # 輸出到 csv 的內容
 			# 讀取每一筆紀錄
 			for i in range(len(ufw_logs)):
-				print("正在處理第", i+1, "筆紀錄")
+				print("正在處理第", i+1, "筆紀錄...", end='\r')
 				output = output + '"' + ufw_logs[i][0:3] + '",' + '"' + ufw_logs[i][4:6] + '",' + '"' + ufw_logs[i][7:16] + '",'  # 時間
 				output = output + get_kernel_name(ufw_logs[i])  # kernel名稱另外這邊就先抓
 				output = output + get_expect_time(ufw_logs[i])
 			o.write(output)  # 寫入csv
+			print(end='\n\n')  # 讓之前 print 出來的東西不會被覆蓋（\r\n）順便排版
 
 
 # 抓取 kernel 之後的部分

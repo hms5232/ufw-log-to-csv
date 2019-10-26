@@ -52,8 +52,9 @@ def get_expect_time(log_string):
 			endtag = log_string_tmp.find(' ') + 1
 			# 如果是有=的話就只抓=後面的部分
 			ptr_equal = log_string[starttag+1:endtag].find('=')
+			# 因為在RES之後flag有可能不只一個，所以在RES之後到URGP之間通通抓出來
 			isRES = False
-			if ptr_equal != -1:
+			if ptr_equal != -1:  # 有=
 				if log_string[starttag+1:ptr_equal+1] == "RES":
 					isRES = True
 				starttag = log_string.find('=')
@@ -61,17 +62,20 @@ def get_expect_time(log_string):
 
 			log_string = log_string[endtag:]  # 保留空格不切掉
 			if isRES:
+				# 抓取RES後面剩下的項目到URPG之前(control flags)
 				tmp_index = 0
-				tmp = log_string[1:].split(" ")
+				# 擷取control flags和之後的內容
+				tmp = log_string[1:].split(" ")  # 將剩下的字串用空格來分割並放進list
 				while True:
-					if tmp[tmp_index].find("=") >= 0:
+					if tmp[tmp_index].find("=") >= 0:  # 如果發現=，代表已經擷取完畢了
 						break
 					tmp_index += 1
 				S = ""
-				for s in tmp[:tmp_index]:
+				for s in tmp[:tmp_index]:  # 開始拿出每個control flags
 					S += s+"|"
-				S = S[:-1]
+				S = S[:-1]  # 拿掉最後一個|
 				result = result + '"' + S + '",'
+				# 將剩下的部分依照原本的邏輯處理
 				ptr = log_string.find("=")
 				while True:
 					ptr -= 1

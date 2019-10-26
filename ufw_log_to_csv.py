@@ -27,6 +27,7 @@ def main():
 				output = output + '"' + ufw_logs[i][0:3] + '",' + '"' + ufw_logs[i][4:6] + '",' + '"' + ufw_logs[i][7:16] + '",'  # 時間
 				output = output + get_kernel_name(ufw_logs[i])  # kernel名稱另外這邊就先抓
 				output = output + get_expect_time(ufw_logs[i])
+
 			o.write(output)  # 寫入csv
 			print(end='\n\n')  # 讓之前 print 出來的東西不會被覆蓋（\r\n）順便排版
 
@@ -50,10 +51,35 @@ def get_expect_time(log_string):
 			log_string_tmp = log_string[starttag+1:]
 			endtag = log_string_tmp.find(' ') + 1
 			# 如果是有=的話就只抓=後面的部分
-			if log_string[starttag+1:endtag].find('=') != -1:
+			ptr_equal = log_string[starttag+1:endtag].find('=')
+			isRES = False
+			if ptr_equal != -1:
+				if log_string[starttag+1:ptr_equal+1] == "RES":
+					isRES = True
 				starttag = log_string.find('=')
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
+
 			log_string = log_string[endtag:]  # 保留空格不切掉
+			if isRES:
+				tmp_index = 0
+				tmp = log_string[1:].split(" ")
+				while True:
+					if tmp[tmp_index].find("=") >= 0:
+						break
+					tmp_index += 1
+				S = ""
+				for s in tmp[:tmp_index]:
+					S += s+"|"
+				S = S[:-1]
+				result = result + '"' + S + '",'
+				ptr = log_string.find("=")
+				while True:
+					ptr -= 1
+					if log_string[ptr] == " ":
+						break
+				log_string = log_string[ptr:]
+				
+				
 	result = result + '\n'  # 一筆紀錄處理完了記得換行
 	return result
 

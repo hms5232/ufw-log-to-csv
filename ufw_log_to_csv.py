@@ -27,6 +27,7 @@ def main():
 				output = output + '"' + ufw_logs[i][0:3] + '",' + '"' + ufw_logs[i][4:6] + '",' + '"' + ufw_logs[i][7:16] + '",'  # 時間
 				output = output + get_kernel_name(ufw_logs[i])  # kernel名稱另外這邊就先抓
 				output = output + get_expect_time(ufw_logs[i])
+
 			o.write(output)  # 寫入csv
 			print(end='\n\n')  # 讓之前 print 出來的東西不會被覆蓋（\r\n）順便排版
 
@@ -50,10 +51,39 @@ def get_expect_time(log_string):
 			log_string_tmp = log_string[starttag+1:]
 			endtag = log_string_tmp.find(' ') + 1
 			# 如果是有=的話就只抓=後面的部分
-			if log_string[starttag+1:endtag].find('=') != -1:
+			ptr_equal = log_string[starttag+1:endtag].find('=')
+			# 因為在RES之後flag有可能不只一個，所以在RES之後到URGP之間通通抓出來
+			isRES = False
+			if ptr_equal != -1:  # 有=
+				if log_string[starttag+1:ptr_equal+1] == "RES":
+					isRES = True
 				starttag = log_string.find('=')
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
+
 			log_string = log_string[endtag:]  # 保留空格不切掉
+			if isRES:
+				# 抓取RES後面剩下的項目到URPG之前(control flags)
+				tmp_index = 0
+				# 擷取control flags和之後的內容
+				tmp = log_string[1:].split(" ")  # 將剩下的字串用空格來分割並放進list
+				while True:
+					if tmp[tmp_index].find("=") >= 0:  # 如果發現=，代表已經擷取完畢了
+						break
+					tmp_index += 1
+				S = ""
+				for s in tmp[:tmp_index]:  # 開始拿出每個control flags
+					S += s+"|"
+				S = S[:-1]  # 拿掉最後一個|
+				result = result + '"' + S + '",'
+				# 將剩下的部分依照原本的邏輯處理
+				ptr = log_string.find("=")
+				while True:
+					ptr -= 1
+					if log_string[ptr] == " ":
+						break
+				log_string = log_string[ptr:]
+				
+				
 	result = result + '\n'  # 一筆紀錄處理完了記得換行
 	return result
 

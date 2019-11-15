@@ -36,7 +36,8 @@ def main():
 def get_expect_time(log_string):
 	log_string = log_string[16:]  # 把前面已經擷取的時間部分切掉
 	result = ''  # 擷取出來的內容
-	isDF = False
+	isDF = False  # 這筆紀錄是否為DF（don't fragment）的判斷
+	isUDP = False  # 判斷是不是UDP協定（如果是UDP協定會有些欄位沒有資料）
 	while len(log_string) > 2:  # 這筆紀錄還沒跑完
 		# Re:從零開始
 		starttag = 0
@@ -59,10 +60,15 @@ def get_expect_time(log_string):
 				if log_string[starttag+1:ptr_equal+1] == "RES":
 					isRES = True
 				starttag = log_string.find('=')
+			
+			if log_string[starttag+1:endtag] == 'UDP':  # 如果是UDP
+				isUDP = True
+			
 			if log_string[starttag+1:endtag] == 'DF':  # 如果是DF
 				isDF = True
 				log_string = log_string[endtag:]  # 保留空格不切掉
 				continue
+			
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
 
 			log_string = log_string[endtag:]  # 保留空格不切掉
@@ -90,7 +96,11 @@ def get_expect_time(log_string):
 				
 				
 	if isDF :  # 如果有DF就在最後面加上
-		result = result + '"DF",'
+		if isUDP:  # 如果是UDP封包則要補齊空出來的欄位
+			result = result + '"","","","DF",'  # 補漏洞
+		else:
+			result = result + '"DF",'  # 一般情況下直接加在最後面即可
+	
 	result = result + '\n'  # 一筆紀錄處理完了記得換行
 	return result
 

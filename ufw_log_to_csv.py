@@ -4,6 +4,9 @@
 """
 author: hms5232
 source code on https://github.com/hms5232/ufw-log-to-csv
+Contact, report bugs or ask questions: https://github.com/hms5232/ufw-log-to-csv/issues
+
+Windows users can download .exe file on https://github.com/hms5232/ufw-log-to-csv/releases
 """
 
 
@@ -13,11 +16,11 @@ import datetime
 def main():
 	# try...expect...finally...
 	# 用 with 資源會自動釋放
-	# ※※ >>>  ↓↓↓↓↓↓↓ change input filename here if you want <<< ※※
+	# ※※ >>>  ↓↓↓↓↓↓↓ change input filename or path here if you want <<< ※※
 	with open('ufw.log', 'r', encoding='UTF-8') as f:
 		ufw_logs = f.readlines()  # 逐行讀取並存入 list
 		now_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  # 取得現在時間並格式化
-		# ※※ >>>  ↓↓↓↓↓↓↓↓↓↓↓ change output filename here if you want <<< ※※
+		# ※※ >>>  ↓↓↓↓↓↓↓↓↓↓↓ change output filename or path here if you want <<< ※※
 		with open("ufw"+now_time+".csv", 'a', encoding='UTF-8') as o:  # o of "output"
 			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","Control Bits / flags","URGP"\n'
 			output = csv_title  # 輸出到 csv 的內容
@@ -48,7 +51,6 @@ def get_expect_time(log_string):
 			result = result + '"' + log_string[starttag+1:endtag] + '",'
 			log_string = log_string[endtag+1:]  # 去掉]後從空格開始
 		elif log_string.find(' ') != -1:  # 再抓剩下的
-			# TODO: 竟然有個什麼DF的害我欄位歪掉不說還要另外寫判斷
 			starttag = log_string.find(' ')
 			log_string_tmp = log_string[starttag+1:]
 			endtag = log_string_tmp.find(' ') + 1

@@ -15,15 +15,16 @@ import csv
 
 
 def main():
+	# TODO: 將路徑及檔案名稱放在這邊做成變數方便使用者修改使用
 	# try...expect...finally...
 	# 用 with 資源會自動釋放
-	# TODO: 將路徑及檔案名稱放在這邊做成變數方便使用者修改使用
 	# ※※ >>>  ↓↓↓↓↓↓↓ change input filename or path here if you want <<< ※※
 	with open('ufw.log', 'r', encoding='UTF-8') as f:
 		ufw_logs = f.readlines()  # 逐行讀取並存入 list
 		now_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  # 取得現在時間並格式化
 		# ※※ >>>  ↓↓↓↓↓↓↓↓↓↓↓ change output filename or path here if you want <<< ※※
-		with open("ufw"+now_time+".csv", 'a', encoding='UTF-8') as o:  # o of "output"
+		# 為了讓換行字元可以被正確解析，需要加上 newline='' 參數
+		with open("ufw"+now_time+".csv", 'a', encoding='UTF-8', newline='') as o:  # o of "output"
 			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","Control Bits / flags","URGP"\n'
 
 			fieldnames = ['月', '日', '時間', '主機名稱', 'kernel 時間', '動作', 'IN', 'OUT', 'MAC', 'SRC', 'DST', 'LEN', 'TOS', 'PREC', 'TTL', 'ID', 'DF', 'PROTO', 'SPT', 'DPT', 'WINDOW', 'RES', 'Control Bits / flags', 'URGP', 'TC', 'HOPLIMIT', 'FLOWLBL', 'TYPE', 'CODE', 'SEQ', '??']  # 欄位名稱

@@ -112,7 +112,8 @@ def get_after_brackets(log_string):
 			if log_item[0] == 'DF':
 				log_dict['DF'] = '＊'
 			else:
-				log_dict['DF'] = ''  # 避免找不到 key 的問題
+				if not 'DF' in log_dict:  # 避免前面已經加上＊被覆蓋
+					log_dict['DF'] = ''  # 避免找不到 key 的問題
 				# 除此之外大概就是 Control Bits / flags 的部份，直接跳過不移除
 				continue
 		log_list.remove(i)  # 跑完之後就移除項目

@@ -46,7 +46,16 @@ def main():
 				for j in get_expect_time(ufw_logs[i]).items():
 					record[j[0]] = j[1]
 
-				writer.writerow(record)  # 寫入一列
+				try:
+					writer.writerow(record)  # 寫入一列
+				except ValueError:
+					print()  # 避免第幾筆紀錄的輸出被覆蓋掉
+					print("紀錄中出現了程式碼中沒有的欄位！請複製錯誤紀錄及該筆原始 log 發起 issue 或自行更新後發 Pull request。\n")
+					print("\thttps://github.com/hms5232/ufw-log-to-csv/issues")
+					print("\n===== 以下錯誤紀錄 =====\n")
+					raise
+				except:
+					raise
 
 			print(end='\n\n')  # 讓之前 print 出來的東西不會被覆蓋（\r\n）順便排版
 

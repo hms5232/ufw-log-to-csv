@@ -28,7 +28,7 @@ def main():
 			csv_title = '"月","日","時間","主機名稱","kernel 時間","動作","IN","OUT","MAC", "來自(src)", "DST", "LEN","TOS","PREC","TTL","ID","協定(PROTO)","來源埠(SPT)","DPT","WINDOW","RES","Control Bits / flags","URGP"\n'
 
 			# You can change order of fieldnames here
-			fieldnames = ['月', '日', '時間', '主機名稱', 'kernel 時間', '動作', 'IN', 'OUT', 'MAC', 'SRC', 'DST', 'LEN', 'TOS', 'PREC', 'TTL', 'ID', 'DF', 'PROTO', 'SPT', 'DPT', 'WINDOW', 'RES', 'Control Bits / flags', 'URGP', 'TC', 'HOPLIMIT', 'FLOWLBL', 'TYPE', 'CODE', 'SEQ', 'MTU', '??']  # 欄位名稱
+			fieldnames = ['月', '日', '時間', '主機名稱', 'kernel 時間', '動作', 'IN', 'OUT', 'MAC', 'SRC', 'DST', 'LEN', 'TOS', 'PREC', 'TTL', 'ID', 'DF', 'PROTO', 'SPT', 'DPT', 'WINDOW', 'RES', 'Control Bits / flags', 'URGP', 'TC', 'HOPLIMIT', 'FLOWLBL', 'TYPE', 'CODE', 'SEQ', 'MTU', 'MARK', '??']  # 欄位名稱
 			writer = csv.DictWriter(o, fieldnames=fieldnames)
 			writer.writeheader()  # 寫入標題
 
